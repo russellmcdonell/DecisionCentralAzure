@@ -1,5 +1,5 @@
 # DecisionCentralAzure
-An Azure compatible, flask implementation of <a href="https://github.com/russellmcdone/DecisionCentral">DecisionCentral</a>
+An Azure compatible, flask implementation of <a href="https://github.com/russellmcdonell/DecisionCentral">DecisionCentral</a>
 
 DecisionCentral is a central repository for all DMN based decision services.  
 
