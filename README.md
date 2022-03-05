@@ -16,17 +16,13 @@ DecisionCentral
   - creates an OpenAPI specification for the the API associated with this decision service
     - It will be displayed as a web page, but it can also be downloaded and imported to Postman/Swagger etc.
 
-DecisionCentral listens for http requests on port 7777 by default. The -p portNo option lets you assign a different port. However, DecisionCental can also be run in a container (it uses no disk storage - see the dockerfile) and you can use containter port mapping to map your desired port to 7777.
+This version allows you to stand up a version of DecisionCentral in Azure.
 
-DecisionCentral can be run locally (see -h option for details).  
-However can also be run in a container - dockerfile can be used to build a Docker image  
-\$ docker build -t decisioncentral:0.0.1 .  
-And run under Docker Desktop  
-\$ docker run --name dockercentral -p 7777:7777 -d decisioncentral:0.0.1
+The process should be
+  - Clone this repository
+  - Deploy to your Azure App Service ( use Azure add-ins for Visual Studio Code )
 
-There is a flask version of DecisionCentral
-
-questioner.py is a client that calls a specified Decision Central API, passing data from questions.csv and storing the decisions in answers.csv
+If that process doesn't work for you, but you find another one that does, then please let me know ( russell.mcdonell@c-cost.com )
 
 DecisionCentral is not, of itself, a production product. You use pyDMNrules to build those.  
 It is intended for use at Hackathons and Connectathons; anywhere you need a complex decision service created quickly and easily.
