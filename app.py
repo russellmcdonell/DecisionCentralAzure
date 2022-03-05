@@ -289,8 +289,8 @@ def splash():
     message += '<p><b><u>WARNING:</u></b>This is not a production service. '
     message += 'This Azure service can be stopped/started/rebooted at any time. When it is rebooted everything is lost. You will need to re-upload you DMN compliant Excel workbooks in order to restore services. '
     message += 'There is no security/login requirements on this service. Anyone can upload their rules, using a Excel workbook with the same name as yours, thus replacing/corrupting your rules. '
-    message += 'It is recommended that you obtain a copy of the source code from <a href="https://github.com/russellmcdonell/DecisionCentralAzure">GitHub</a> and run it in your own Azure App Service with appropriate security.'
-    message += 'However, this in not production ready software. It is built, using <a href="https://pypi.org/project/pyDMNrules/">pyDMNrules</a>. '
+    message += 'It is recommended that you obtain a copy of the source code from <a href="https://github.com/russellmcdonell/DecisionCentralAzure">GitHub</a> and run it in your own Azure App Service with appropriate security. '
+    message += 'This in not production ready software. It is built, using <a href="https://pypi.org/project/pyDMNrules/">pyDMNrules</a>. '
     message += 'You can build production ready solutions using <b>pyDMNrules</b>, but this is not one of those solutions.</p>'
     return message
 
