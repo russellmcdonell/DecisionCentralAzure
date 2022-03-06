@@ -44,6 +44,23 @@ def mkOpenAPI(glossary, name):
     thisAPI.append('info:')
     thisAPI.append('  title: Decision Service {}'.format(name))
     thisAPI.append('  version: 1.0.0')
+    if ('X-Forwarded-Host' in request.headers) and ('X-Forwarded-Proto' in request.headers):
+        thisAPI.append('servers:')
+        thisAPI.append('  [')
+        thisAPI.append('    "url":"{}://{}"'.format(request.headers['X-Forwarded-Proto'], request.headers['X-Forwarded-Host']))
+        thisAPI.append('  ]')
+    elif 'Host' in request.headers:
+        thisAPI.append('servers:')
+        thisAPI.append('  [')
+        thisAPI.append('    "url":"{}"'.format(request.headers['Host']))
+        thisAPI.append('  ]')
+    elif 'Forwarded' in request.headers:
+        forwards = request.headers['Forwarded'].split(';')
+        origin = forwards[0].split('=')[1]
+        thisAPI.append('servers:')
+        thisAPI.append('  [')
+        thisAPI.append('    "url":"{}"'.format(origin))
+        thisAPI.append('  ]')
     thisAPI.append('paths:')
     thisAPI.append('  /api/{}:'.format(quote(name)))
     thisAPI.append('    post:')
@@ -72,8 +89,6 @@ def mkOpenAPI(glossary, name):
         for variable in glossary[concept]:
             thisAPI.append('        "{}":'.format(variable))
             thisAPI.append('          type: string')
-            thisAPI.append('          required: false')
-    thisAPI.append('      required: true')
     thisAPI.append('    decisionOutputData:')
     thisAPI.append('      type: object')
     thisAPI.append('      properties:')
@@ -84,14 +99,10 @@ def mkOpenAPI(glossary, name):
         for variable in glossary[concept]:
             thisAPI.append('            "{}":'.format(variable))
             thisAPI.append('              type: string')
-            thisAPI.append('              required: false')
-    thisAPI.append('          required: true')
     thisAPI.append('        "Executed Rule":')
     thisAPI.append('          type: array')
     thisAPI.append('          items:')
     thisAPI.append('            type: string')
-    thisAPI.append('            required: false')
-    thisAPI.append('          required: true')
     thisAPI.append('        "Status":')
     thisAPI.append('          type: object')
     thisAPI.append('          properties:')
@@ -99,9 +110,11 @@ def mkOpenAPI(glossary, name):
     thisAPI.append('              type: array')
     thisAPI.append('              items:')
     thisAPI.append('                type: string')
-    thisAPI.append('                required: false')
-    thisAPI.append('          required: true')
-    thisAPI.append('      required: true')
+    thisAPI.append('      required: [')
+    thisAPI.append('        "Result",')
+    thisAPI.append('        "Executed Rule",')
+    thisAPI.append('        "Status"')
+    thisAPI.append('      ]')
     return '\n'.join(thisAPI)
 
 
@@ -209,7 +222,7 @@ def convertIn(thisValue):
                     thisDateTime = thisDateTime
             return thisDateTime
         elif yaccTokens[0].type == 'DATE':
-            return dateutil.parser.parse(p.expr).date()
+            return dateutil.parser.parse(thisValue).date()
         elif yaccTokens[0].type == 'TIME':
             parts = thisValue.split('@')
             thisTime =  dateutil.parser.parse(parts[0]).timetz()     # A time with timezone
@@ -234,7 +247,7 @@ def convertOut(thisValue):
     elif isinstance(thisValue, datetime.time):
         return thisValue.isoformat()
     elif isinstance(thisValue, datetime.timedelta):
-        duration = value.total_seconds()
+        duration = thisValue.total_seconds()
         secs = duration % 60
         duration = int(duration / 60)
         mins = duration % 60
@@ -324,13 +337,13 @@ def upload_file():
     try:                # Convert file to workbook
         wb = load_workbook(filename=workbook)
     except Exception as e:
-        flask('bad workbook')
+        abort('bad workbook')
         return redirect(url_for('splash'))
 
     dmnRules = pyDMNrules.DMN()             # An empty Rules Engine
     status = dmnRules.use(wb)               # Add the rules from this DMN compliant Excel workbook
     if 'errors' in status:
-        flask('bad DMN rules')
+        abort('bad DMN rules')
         return redirect(url_for('splash'))
 
     # Add this decision service to the list
