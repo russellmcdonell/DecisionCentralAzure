@@ -1,3 +1,5 @@
+### 0.0.8 - added support for uploading XML DMN files
+ - Extended acceptable file extensions to .xls, .xlsm, .xml and .dmn
 ### 0.0.7 - added missing </body> and </html> tags
  - Set the return status for successful uploads to 201
  - Added OpenAPI specification for file upload
