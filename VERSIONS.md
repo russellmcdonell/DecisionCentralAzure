@@ -1,4 +1,5 @@
 ### 1.0.0 - Tested with tck-dmn the DMN Conformance Kit
+ - Pushed to github to create a deployment
 ### 0.1.0 - Added user forms and APIs for testing individual Decision Tables
  - Added APIs for uploading DMN compliant Excel workbooks and DMN comformant XML files
 ### 0.0.8 - added support for uploading XML DMN files
